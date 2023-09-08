@@ -3,9 +3,7 @@ import ApiError from '../../../errors/ApiError';
 import prisma from '../../../shared/prisma';
 import { ICourseCreateData } from './course.interface';
 
-const insertIntoDB = async (
-  data: ICourseCreateData
-): Promise<ICourseCreateData> => {
+const insertIntoDB = async (data: ICourseCreateData): Promise<any> => {
   const { preRequisiteCourses, ...courseData } = data;
   // console.log(preRequisiteCourses);
   // console.log(courseData);
