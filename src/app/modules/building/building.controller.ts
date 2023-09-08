@@ -30,7 +30,19 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await BuildingService.getByIdFromDB(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Single Building Data Fetched successfully',
+    data: result,
+  });
+});
+
 export const BuildingController = {
   insertIntoDB,
   getAllFromDB,
+  getByIdFromDB,
 };
