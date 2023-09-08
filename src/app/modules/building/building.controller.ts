@@ -14,6 +14,17 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
+  const result = await BuildingService.getAllFromDB();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Building Data Fetched Successfully',
+    data: result,
+  });
+});
+
 export const BuildingController = {
   insertIntoDB,
+  getAllFromDB,
 };

@@ -8,6 +8,12 @@ const insertIntoDB = async (data: Building): Promise<Building> => {
   return result;
 };
 
+const getAllFromDB = async () => {
+  const result = await prisma.building.findMany();
+  return result;
+};
+
 export const BuildingService = {
   insertIntoDB,
+  getAllFromDB,
 };
