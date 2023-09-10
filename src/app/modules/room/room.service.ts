@@ -103,8 +103,38 @@ const getByIdFromDB = async (id: string): Promise<Room | null> => {
   return result;
 };
 
+const updateOneInDB = async (
+  id: string,
+  payload: Partial<Room>
+): Promise<Room> => {
+  const result = await prisma.room.update({
+    where: {
+      id,
+    },
+    data: payload,
+    include: {
+      building: true,
+    },
+  });
+  return result;
+};
+
+const deleteByIdFromDB = async (id: string): Promise<Room> => {
+  const result = await prisma.room.delete({
+    where: {
+      id,
+    },
+    include: {
+      building: true,
+    },
+  });
+  return result;
+};
+
 export const RoomService = {
   insertIntoDB,
   getAllFromDB,
   getByIdFromDB,
+  updateOneInDB,
+  deleteByIdFromDB,
 };
