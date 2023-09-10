@@ -24,7 +24,7 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Courses fetched successfully',
+    message: 'All Courses Data Fetched Successfully',
     meta: result.meta,
     data: result.data,
   });
@@ -36,7 +36,7 @@ const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Course fetched successfully',
+    message: 'Single Course Data Fetched Successfully',
     data: result,
   });
 });
@@ -47,7 +47,7 @@ const updateOneInDB = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Course updated successfully',
+    message: 'Course Updated Successfully',
     data: result,
   });
 });
@@ -58,7 +58,7 @@ const deleteByIdFromDB = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Course deleted successfully',
+    message: 'Course Deleted Successfully',
     data: result,
   });
 });
