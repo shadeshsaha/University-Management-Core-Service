@@ -130,18 +130,21 @@ model Course {
   credits         Int                    @default(0)
   createdAt       DateTime               @default(now())
   updatedAt       DateTime               @updatedAt
-  preRequisite    CourseToPrerequisite[] @relation("CourseToPrerequisite")
-  preRequisiteFor CourseToPrerequisite[] @relation("PrerequisiteToCourse")
+  preRequisite    CourseToPrerequisite[] @relation("CourseToPrerequisite") // Current course ta newar "পূর্বশর্ত"
+  preRequisiteFor CourseToPrerequisite[] @relation("PrerequisiteToCourse") // Porer course ta newar "jonno পূর্বশর্ত"
 
   @@map("courses")
 }
 
 model CourseToPrerequisite {
-  courseId       String
-  preRequisiteId String
+  courseId       String // Current Course ID
+  preRequisiteId String // Pre-Requisite Course ID 
 
-  course       Course @relation(fields: [courseId], references: [id], name: "CourseToPrerequisite")
+  course       Course @relation(fields: [courseId], references: [id], name: "CourseToPrerequisite") // Current jei course ta thakbe setar sathe relation create korche
   preRequisite Course @relation(fields: [preRequisiteId], references: [id], name: "PrerequisiteToCourse")
 
   @@id([courseId, preRequisiteId])
 }
+
+// Course To Prerequisite = পূর্বশর্ত করার জন্য কোর্স
+// Prerequisite To Course = কোর্স করার পূর্বশর্ত

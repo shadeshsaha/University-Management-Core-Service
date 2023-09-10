@@ -8,7 +8,7 @@ const insertIntoDB = async (data: ICourseCreateData): Promise<any> => {
   // console.log(preRequisiteCourses);
   // console.log(courseData);
 
-  // Started Transaction
+  // Started Transaction & Rool-Back
   const newCourse = await prisma.$transaction(async transactionClient => {
     const result = await transactionClient.course.create({
       data: courseData,
@@ -23,31 +23,30 @@ const insertIntoDB = async (data: ICourseCreateData): Promise<any> => {
         const createPrerequisite =
           await transactionClient.courseToPrerequisite.create({
             data: {
-              courseId: result.id,
-              preRequisiteId: preRequisiteCourses[index].courseId,
+              courseId: result.id, // Current course jeta create hocche setar ID
+              preRequisiteId: preRequisiteCourses[index].courseId, // preRequisiteCourses er array te jei course gulo pathacchi, setar array theke nibo
             },
           });
         console.log('createPrerequisite', createPrerequisite);
       }
     }
-
     return result;
   });
 
   if (newCourse) {
     const responseData = await prisma.course.findUnique({
       where: {
-        id: newCourse.id,
+        id: newCourse.id, // create howa data er ID dibe(hover korle bujha jabe)
       },
       include: {
         preRequisite: {
           include: {
-            preRequisite: true,
+            preRequisite: true, // pre-requisite course dekhabe
           },
         },
         preRequisiteFor: {
           include: {
-            course: true,
+            course: true, // porer course dekhabe
           },
         },
       },
