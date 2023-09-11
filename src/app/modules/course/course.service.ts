@@ -29,16 +29,31 @@ const insertIntoDB = async (data: ICourseCreateData): Promise<any> => {
     }
 
     if (preRequisiteCourses && preRequisiteCourses.length > 0) {
-      for (let index = 0; index < preRequisiteCourses.length; index++) {
-        const createPrerequisite =
-          await transactionClient.courseToPrerequisite.create({
-            data: {
-              courseId: result.id, // Current course jeta create hocche setar ID
-              preRequisiteId: preRequisiteCourses[index].courseId, // preRequisiteCourses er array te jei course gulo pathacchi, setar array theke nibo
-            },
-          });
-        console.log('createPrerequisite', createPrerequisite);
-      }
+      await asyncForEach(
+        preRequisiteCourses,
+        async (preRequisiteCourse: IPrerequisiteCourseRequest) => {
+          const createPrerequisite =
+            await transactionClient.courseToPrerequisite.create({
+              data: {
+                courseId: result.id, // Current course jeta create hocche setar ID
+                preRequisiteId: preRequisiteCourse.courseId, // preRequisiteCourses er array te jei course gulo pathacchi, setar array theke nibo
+              },
+            });
+          console.log('createPrerequisite', createPrerequisite);
+        }
+      );
+
+      // Uporer code r nicher code same. sudhu function use kore choto kora hoise.
+      // if (preRequisiteCourses && preRequisiteCourses.length > 0) {
+      //   for (let index = 0; index < preRequisiteCourses.length; index++) {
+      //     const createPrerequisite = await transactionClient.courseToPrerequisite.create({
+      //         data: {
+      //           courseId: result.id, // Current course jeta create hocche setar ID
+      //           preRequisiteId: preRequisiteCourses[index].courseId, // preRequisiteCourses er array te jei course gulo pathacchi, setar array theke nibo
+      //         },
+      //       });
+      //     console.log('createPrerequisite', createPrerequisite);
+      //   }
     }
     return result;
   });
@@ -182,6 +197,7 @@ const updateOneInDB = async (
         coursePrerequisite =>
           coursePrerequisite.courseId && coursePrerequisite.isDeleted
       );
+      // console.log(deletePrerequisite)
 
       const newPrerequisite = preRequisiteCourses.filter(
         coursePrerequisite =>
