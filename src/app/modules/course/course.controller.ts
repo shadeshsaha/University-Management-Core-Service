@@ -82,7 +82,7 @@ const removeFaculties = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Faculty Deleted From Course Successfully',
+    message: 'Faculty Removed From Course Successfully',
     data: result,
   });
 });

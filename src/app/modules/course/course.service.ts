@@ -292,6 +292,7 @@ const deleteByIdFromDB = async (id: string): Promise<Course> => {
 }
 */
 
+// Faculty assign in a course -> course theke faculty k assign kora hocche
 const assignFaculties = async (
   id: string,
   payload: string[]
@@ -316,6 +317,7 @@ const assignFaculties = async (
   return assignFacultiesData;
 };
 
+// Faculty remove from a course -> course theke faculty k remove kora hocche
 const removeFaculties = async (
   id: string,
   payload: string[]
