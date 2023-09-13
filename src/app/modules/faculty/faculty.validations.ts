@@ -61,7 +61,7 @@ const update = z.object({
 const assignOrRemoveCourses = z.object({
   body: z.object({
     courses: z.array(z.string(), {
-      required_error: 'Courses are required',
+      required_error: 'Courses Are Required',
     }),
   }),
 });
