@@ -96,6 +96,7 @@ model Faculty {
 
   academicFaculty   AcademicFaculty @relation(fields: [academicFacultyId], references: [id])
   academicFacultyId String
+  courses           CourseFaculty[]
 
   @@map("faculties")
 }
@@ -132,6 +133,7 @@ model Course {
   updatedAt       DateTime               @updatedAt
   preRequisite    CourseToPrerequisite[] @relation("CourseToPrerequisite") // Current course ta newar "পূর্বশর্ত"
   preRequisiteFor CourseToPrerequisite[] @relation("PrerequisiteToCourse") // Porer course ta newar "jonno পূর্বশর্ত"
+  faculties       CourseFaculty[]
 
   @@map("courses")
 }
@@ -148,3 +150,15 @@ model CourseToPrerequisite {
 
 // Course To Prerequisite = পূর্বশর্ত করার জন্য কোর্স
 // Prerequisite To Course = কোর্স করার পূর্বশর্ত
+
+// Faculty Assign for Specific Course
+model CourseFaculty {
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id])
+
+  facultyId String
+  faculty   Faculty @relation(fields: [facultyId], references: [id])
+
+  @@id([courseId, facultyId])
+  @@map("course_faculties")
+}
