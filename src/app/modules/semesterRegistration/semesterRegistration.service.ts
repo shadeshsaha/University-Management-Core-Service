@@ -117,7 +117,22 @@ const getAllFromDB = async (
   };
 };
 
+const getByIdFromDB = async (
+  id: string
+): Promise<SemesterRegistration | null> => {
+  const result = await prisma.semesterRegistration.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      academicSemester: true,
+    },
+  });
+  return result;
+};
+
 export const SemesterRegistrationService = {
   insertIntoDB,
   getAllFromDB,
+  getByIdFromDB,
 };
