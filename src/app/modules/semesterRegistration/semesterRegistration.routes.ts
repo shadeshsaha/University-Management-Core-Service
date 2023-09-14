@@ -8,4 +8,6 @@ router.get('/:id', SemesterRegistrationController.getByIdFromDB);
 
 router.post('/', SemesterRegistrationController.insertIntoDB);
 
+router.delete('/:id', SemesterRegistrationController.deleteByIdFromDB);
+
 export const semesterRegistrationRoutes = router;
