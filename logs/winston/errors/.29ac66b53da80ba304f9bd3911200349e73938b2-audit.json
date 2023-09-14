@@ -274,6 +274,21 @@
             "date": 1694649618799,
             "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-14-09-06-error.log",
             "hash": "8cfd8cfed672b12b2fa6e953180dcd80f81650549fce86aa4d6714a8bd510c7c"
+        },
+        {
+            "date": 1694686125706,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-14-09-16-error.log",
+            "hash": "345568ac01cf61300ecd7f9fad4ed4a16e08b875348087be7f52aa5acd379741"
+        },
+        {
+            "date": 1694691478009,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-14-09-17-error.log",
+            "hash": "246a4bce02888fd5763fd8e03e944f3f373c47165f09107312c5131f9484240c"
+        },
+        {
+            "date": 1694694250778,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-14-09-18-error.log",
+            "hash": "4a5ef4c276f642132a6acb957ef3bd74c9ab28a526fe54c92793e981f408467c"
         }
     ],
     "hashType": "sha256"
