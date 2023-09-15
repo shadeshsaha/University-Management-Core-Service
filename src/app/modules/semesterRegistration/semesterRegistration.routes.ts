@@ -17,6 +17,8 @@ router.post(
   SemesterRegistrationController.insertIntoDB
 );
 
+router.patch('/:id', SemesterRegistrationController.updateOneInDB);
+
 router.delete(
   '/:id',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),

@@ -131,6 +131,70 @@ const getByIdFromDB = async (
   return result;
 };
 
+// UPCOMING > ONGOING  > ENDED => adding condition sequentially
+const updateOneInDB = async (
+  id: string,
+  payload: Partial<SemesterRegistration>
+): Promise<SemesterRegistration> => {
+  // Checking updating data exist or not
+  const isExist = await prisma.semesterRegistration.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!isExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Semester Data Not Found');
+  }
+
+  // Upcoming theke Ongoing korte parbo. Ongoing theke Ended korte parbo
+  console.log(payload.status);
+  // UPCOMING > ONGOING
+  if (
+    payload.status &&
+    isExist.status === SemesterRegistrationStatus.UPCOMING &&
+    payload.status !== SemesterRegistrationStatus.ONGOING
+  ) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Can only move from UPCOMING to ONGOING'
+    );
+    /**
+     * payload.status => jei data pathacchi setar status jodi thake
+     * isExist.status === SemesterRegistrationStatus.UPCOMING => tahole amra check korbo j amader jei data ta already database a ache(isExist), setar moddhe status ta jodi "UPCOMING" hoy tahole "ONGOING" a change korte dibo
+     * payload.status !== SemesterRegistrationStatus.ONGOING => tahole ekhane amra check kortesi payload er moddhe j status ta pathacchi, shei status ta jodi "ONGOING" er shoman na hoy tahole ekta error diye dicchi.
+     */
+  }
+
+  // ONGOING > ENDED
+  if (
+    payload.status &&
+    isExist.status === SemesterRegistrationStatus.ONGOING &&
+    payload.status !== SemesterRegistrationStatus.ENDED
+  ) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Can only move from ONGOING to ENDED'
+    );
+    /**
+     * payload.status => jei data pathacchi setar status jodi thake
+     * isExist.status === SemesterRegistrationStatus.ONGOING => tahole amra check korbo j amader jei data ta already database a ache(isExist), setar moddhe status ta jodi "ONGOING" hoy tahole "ENDED" a change korte dibo
+     * payload.status !== SemesterRegistrationStatus.ENDED => tahole ekhane amra check kortesi payload er moddhe j status ta pathacchi, shei status ta jodi "ENDED" er shoman na hoy tahole ekta error diye dicchi.
+     */
+  }
+
+  const result = await prisma.semesterRegistration.update({
+    where: {
+      id,
+    },
+    data: payload,
+    include: {
+      academicSemester: true,
+    },
+  });
+  return result;
+};
+
 const deleteByIdFromDB = async (id: string): Promise<SemesterRegistration> => {
   const result = await prisma.semesterRegistration.delete({
     where: {
@@ -147,5 +211,6 @@ export const SemesterRegistrationService = {
   insertIntoDB,
   getAllFromDB,
   getByIdFromDB,
+  updateOneInDB,
   deleteByIdFromDB,
 };
