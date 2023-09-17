@@ -8,4 +8,6 @@ router.get('/:id', OfferedCourseSectionController.getByIdFromDB);
 
 router.post('/', OfferedCourseSectionController.insertIntoDB);
 
+router.patch('/:id', OfferedCourseSectionController.updateOneInDB);
+
 export const offeredCourseSectionRoutes = router;
