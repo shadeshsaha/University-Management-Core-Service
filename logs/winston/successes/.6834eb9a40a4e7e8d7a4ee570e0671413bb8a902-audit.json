@@ -6,21 +6,6 @@
     "auditLog": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\.6834eb9a40a4e7e8d7a4ee570e0671413bb8a902-audit.json",
     "files": [
         {
-            "date": 1693780652521,
-            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-04-09-04-success.log",
-            "hash": "1e4269890bcac6a810e6f0006312b76fc157ae79c512e2f9c7e8e6691c356216"
-        },
-        {
-            "date": 1693783902865,
-            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-04-09-05-success.log",
-            "hash": "c278097957e55bb808e29283213024023550b4a34cdfed3a8ba2eb65743de0ca"
-        },
-        {
-            "date": 1693785677211,
-            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-04-09-06-success.log",
-            "hash": "6db4db4f75d967aff4354e385fc2a4177950066a74bf329e5823d3b442b32f56"
-        },
-        {
             "date": 1693825224986,
             "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-04-09-17-success.log",
             "hash": "2aa95b3b53567bb5e2b1ae18db0e30d7d87de874c70ee70fccaffef66ebf5ba7"
@@ -394,6 +379,11 @@
             "date": 1694989762087,
             "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-18-09-04-success.log",
             "hash": "dbea01f2cea24b9e892bb4765c8e502f2426e428c4c24ed272de9563f3abf866"
+        },
+        {
+            "date": 1694995873913,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-18-09-06-success.log",
+            "hash": "f8320003c6cbca73f36d22404f69bb04eee6ef68204260b39e84337a7a30f5b8"
         }
     ],
     "hashType": "sha256"
