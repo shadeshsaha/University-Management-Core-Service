@@ -399,6 +399,11 @@
             "date": 1695043104412,
             "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-18-09-19-error.log",
             "hash": "7dfe8c4edee737327fd83bf3e18ba78ef2c19528b2c4b73a14e75dcba15f5b4f"
+        },
+        {
+            "date": 1695066347423,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-19-09-01-error.log",
+            "hash": "73ef80f255cb3d38e1f4becbaf30cca883269d1f53c3c44b276b5a9c264f1894"
         }
     ],
     "hashType": "sha256"
