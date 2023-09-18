@@ -6,11 +6,6 @@
     "auditLog": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\.6834eb9a40a4e7e8d7a4ee570e0671413bb8a902-audit.json",
     "files": [
         {
-            "date": 1693825224986,
-            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-04-09-17-success.log",
-            "hash": "2aa95b3b53567bb5e2b1ae18db0e30d7d87de874c70ee70fccaffef66ebf5ba7"
-        },
-        {
             "date": 1693864014178,
             "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-05-09-03-success.log",
             "hash": "400a06f8bcb4675d37302c2b9f84167ee72785306fa7d88fa6c9c7966b039ca8"
@@ -384,6 +379,26 @@
             "date": 1694995873913,
             "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-18-09-06-success.log",
             "hash": "f8320003c6cbca73f36d22404f69bb04eee6ef68204260b39e84337a7a30f5b8"
+        },
+        {
+            "date": 1695031274141,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-18-09-16-success.log",
+            "hash": "f3d48546584b473c743e9a30a76bc4c327820db067f47c4d9bb3d4034c2ab649"
+        },
+        {
+            "date": 1695038152629,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-18-09-17-success.log",
+            "hash": "d9fd122edf03b6d5b9b27fac2f90b5fe52ed0e09f39c355f804c22cd31de86b1"
+        },
+        {
+            "date": 1695039258064,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-18-09-18-success.log",
+            "hash": "d15a0694aba1ef3e6c7f6573f53aad9f792edb5e29ab15fe40824987a73d7588"
+        },
+        {
+            "date": 1695043104400,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-18-09-19-success.log",
+            "hash": "d5eabc257973173d1c78fde8ed8321ea79f169cd7e8029ba3a2f8fbe80abfd3d"
         }
     ],
     "hashType": "sha256"
