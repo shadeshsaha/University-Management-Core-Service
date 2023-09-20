@@ -207,10 +207,74 @@ const deleteByIdFromDB = async (id: string): Promise<SemesterRegistration> => {
   return result;
 };
 
+const startMyRegistration = async (authUserId: string) => {
+  // Get student data [studentInfo]
+  const studentInfo = await prisma.student.findFirst({
+    where: {
+      studentId: authUserId,
+    },
+  });
+  // console.log(studentInfo);
+
+  if (!studentInfo) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Student information not found!'
+    );
+  }
+
+  // If a semester registration is not on-going, we check the semester registration is on-going or up-coming
+  // Now get semesterRegistrationInfo
+  const semesterRegistrationInfo = await prisma.semesterRegistration.findFirst({
+    where: {
+      // check korbo kono semester registration on-going/up-coming ache kina
+      status: {
+        in: [
+          SemesterRegistrationStatus.ONGOING,
+          SemesterRegistrationStatus.UPCOMING,
+        ],
+      },
+    },
+  });
+  // console.log('semesterRegistrationInfo: ', semesterRegistrationInfo);
+
+  // If a semester is up-coming, we can not register a student into a semester. It will throw an error.
+  if (
+    semesterRegistrationInfo?.status === SemesterRegistrationStatus.UPCOMING
+  ) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Registration is not started yet!'
+    );
+  }
+
+  // When a semester is on-going, we will allow a student to do registration
+  const studentRegistration = await prisma.studentSemesterRegistration.create({
+    // Relation er moddhei data k directly connect korte pari. We have student and semesterRegistration info
+    data: {
+      // connect student information
+      student: {
+        connect: {
+          id: studentInfo?.id,
+        },
+      }, // prisma schema te "StudentSemesterRegistration" a "relation" jei name a ache shei name ta dite hobe
+
+      // connect semester registration
+      semesterRegistration: {
+        connect: {
+          id: semesterRegistrationInfo?.id,
+        },
+      }, // "student" er motoi same rule "semesterRegistration" a
+    },
+  });
+  return studentRegistration;
+};
+
 export const SemesterRegistrationService = {
   insertIntoDB,
   getAllFromDB,
   getByIdFromDB,
   updateOneInDB,
   deleteByIdFromDB,
+  startMyRegistration,
 };

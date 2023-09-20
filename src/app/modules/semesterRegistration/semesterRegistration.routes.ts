@@ -11,6 +11,13 @@ router.get('/', SemesterRegistrationController.getAllFromDB);
 router.get('/:id', SemesterRegistrationController.getByIdFromDB);
 
 router.post(
+  '/start-registration',
+  auth(ENUM_USER_ROLE.STUDENT),
+  SemesterRegistrationController.startMyRegistration
+  // student token generate korte chaile ei link a easily giye create kora jabe [https://jwt.io/] - [video: 39_7]
+);
+
+router.post(
   '/',
   validateRequest(SemesterRegistrationValidation.create),
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
