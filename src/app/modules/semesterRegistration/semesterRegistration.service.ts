@@ -149,7 +149,7 @@ const updateOneInDB = async (
   }
 
   // Upcoming theke Ongoing korte parbo. Ongoing theke Ended korte parbo
-  console.log(payload.status);
+  // console.log(payload.status);
   // UPCOMING > ONGOING
   if (
     payload.status &&
