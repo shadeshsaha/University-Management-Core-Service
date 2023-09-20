@@ -2,6 +2,7 @@ import {
   Prisma,
   SemesterRegistration,
   SemesterRegistrationStatus,
+  StudentSemesterRegistration,
 } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
@@ -207,7 +208,12 @@ const deleteByIdFromDB = async (id: string): Promise<SemesterRegistration> => {
   return result;
 };
 
-const startMyRegistration = async (authUserId: string) => {
+const startMyRegistration = async (
+  authUserId: string
+): Promise<{
+  semesterRegistration: SemesterRegistration | null;
+  studentSemesterRegistration: StudentSemesterRegistration | null;
+}> => {
   // Get student data [studentInfo]
   const studentInfo = await prisma.student.findFirst({
     where: {
@@ -248,26 +254,46 @@ const startMyRegistration = async (authUserId: string) => {
     );
   }
 
-  // When a semester is on-going, we will allow a student to do registration
-  const studentRegistration = await prisma.studentSemesterRegistration.create({
-    // Relation er moddhei data k directly connect korte pari. We have student and semesterRegistration info
-    data: {
-      // connect student information
+  // A student can registration in a semester once validation ----->
+  // studentRegistration value paile dekhabe
+  let studentRegistration = await prisma.studentSemesterRegistration.findFirst({
+    where: {
       student: {
-        connect: {
-          id: studentInfo?.id,
-        },
-      }, // prisma schema te "StudentSemesterRegistration" a "relation" jei name a ache shei name ta dite hobe
-
-      // connect semester registration
+        id: studentInfo?.id,
+      },
       semesterRegistration: {
-        connect: {
-          id: semesterRegistrationInfo?.id,
-        },
-      }, // "student" er motoi same rule "semesterRegistration" a
+        id: semesterRegistrationInfo?.id,
+      },
     },
   });
-  return studentRegistration;
+
+  // "studentRegistration" data jodi peye jai ba student er registration kora age theke thake, tahole notun kore create korbo na. Na thakle notun kore create krobo.
+  if (!studentRegistration) {
+    // When a semester is on-going, we will allow a student to do registration
+    studentRegistration = await prisma.studentSemesterRegistration.create({
+      // Relation er moddhei data k directly connect korte pari. We have student and semesterRegistration info
+      data: {
+        // connect student information
+        student: {
+          connect: {
+            id: studentInfo?.id,
+          },
+        }, // prisma schema te "StudentSemesterRegistration" a "relation" jei name a ache shei name ta dite hobe
+
+        // connect semester registration
+        semesterRegistration: {
+          connect: {
+            id: semesterRegistrationInfo?.id,
+          },
+        }, // "student" er motoi same rule "semesterRegistration" a
+      },
+    });
+  }
+
+  return {
+    semesterRegistration: semesterRegistrationInfo,
+    studentSemesterRegistration: studentRegistration,
+  };
 };
 
 export const SemesterRegistrationService = {
