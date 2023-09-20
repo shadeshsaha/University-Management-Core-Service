@@ -10,4 +10,6 @@ router.post('/', OfferedCourseClassScheduleController.insertIntoDB);
 
 router.patch('/:id', OfferedCourseClassScheduleController.updateOneInDB);
 
+router.delete('/:id', OfferedCourseClassScheduleController.deleteByIdFromDB);
+
 export const offeredCourseClassScheduleRoutes = router;
