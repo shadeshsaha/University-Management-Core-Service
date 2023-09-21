@@ -11,7 +11,7 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'AcademicDepartment created successfully',
+    message: 'Academic Department Created Successfully',
     data: result,
   });
 });
@@ -23,7 +23,7 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'AcademicDepartments fetched successfully',
+    message: 'All Academic Departments Data Fetched Successfully',
     meta: result.meta,
     data: result.data,
   });
@@ -35,7 +35,7 @@ const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'AcademicDepartment fetched successfully',
+    message: 'Single Academic Department Data Fetched Successfully',
     data: result,
   });
 });
@@ -46,7 +46,7 @@ const updateOneInDB = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'AcademicDepartment updated successfully',
+    message: 'Academic Department Updated Successfully',
     data: result,
   });
 });
@@ -57,7 +57,7 @@ const deleteByIdFromDB = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'AcademicDepartment delete successfully',
+    message: 'Academic Department Delete Successfully',
     data: result,
   });
 });
