@@ -19,4 +19,6 @@ router.post(
 
 router.patch('/:id', OfferedCourseController.updateOneInDB);
 
+router.delete('/:id', OfferedCourseController.deleteByIdFromDB);
+
 export const offeredCourseRoutes = router;
