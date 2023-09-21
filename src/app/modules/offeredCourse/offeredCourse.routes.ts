@@ -17,8 +17,17 @@ router.post(
   OfferedCourseController.insertIntoDB
 );
 
-router.patch('/:id', OfferedCourseController.updateOneInDB);
+router.patch(
+  '/:id',
+  validateRequest(OfferedCourseValidations.update),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  OfferedCourseController.updateOneInDB
+);
 
-router.delete('/:id', OfferedCourseController.deleteByIdFromDB);
+router.delete(
+  '/:id',
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  OfferedCourseController.deleteByIdFromDB
+);
 
 export const offeredCourseRoutes = router;
