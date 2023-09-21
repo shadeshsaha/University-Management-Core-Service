@@ -17,4 +17,6 @@ router.post(
   OfferedCourseController.insertIntoDB
 );
 
+router.patch('/:id', OfferedCourseController.updateOneInDB);
+
 export const offeredCourseRoutes = router;

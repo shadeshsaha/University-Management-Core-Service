@@ -137,8 +137,27 @@ const getByIdFromDB = async (id: string): Promise<OfferedCourse | null> => {
   return result;
 };
 
+const updateOneInDB = async (
+  id: string,
+  payload: Partial<OfferedCourse>
+): Promise<OfferedCourse> => {
+  const result = await prisma.offeredCourse.update({
+    where: {
+      id,
+    },
+    data: payload,
+    include: {
+      semesterRegistration: true,
+      course: true,
+      academicDepartment: true,
+    },
+  });
+  return result;
+};
+
 export const OfferedCourseService = {
   insertIntoDB,
   getAllFromDB,
   getByIdFromDB,
+  updateOneInDB,
 };
