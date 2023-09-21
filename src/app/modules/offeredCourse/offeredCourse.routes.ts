@@ -8,6 +8,7 @@ import { OfferedCourseValidations } from './offeredCourse.validation';
 const router = express.Router();
 
 router.get('/', OfferedCourseController.getAllFromDB);
+router.get('/:id', OfferedCourseController.getByIdFromDB);
 
 router.post(
   '/',
