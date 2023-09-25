@@ -15,7 +15,10 @@ import {
   semesterRegistrationRelationalFieldsMapper,
   semesterRegistrationSearchableFields,
 } from './semesterRegistration.constants';
-import { ISemesterRegistrationFilterRequest } from './semesterRegistration.interface';
+import {
+  IEnrollCoursePayload,
+  ISemesterRegistrationFilterRequest,
+} from './semesterRegistration.interface';
 
 const insertIntoDB = async (
   data: SemesterRegistration
@@ -296,6 +299,52 @@ const startMyRegistration = async (
   };
 };
 
+const enrollIntoCourse = async (
+  authUserId: string,
+  payload: IEnrollCoursePayload
+) => {
+  // console.log('authUserId:', authUserId, 'payload:', payload);
+
+  // Get Student Information
+  const student = await prisma.student.findFirst({
+    where: {
+      studentId: authUserId,
+    },
+  });
+  // console.log('student:', student);
+
+  // Get Semester Registration Info Is It Ongoing Or Not
+  const semesterRegistration = await prisma.semesterRegistration.findFirst({
+    where: {
+      status: SemesterRegistrationStatus.ONGOING,
+    },
+  });
+  // console.log('semesterRegistration: ', semesterRegistration);
+
+  // By "semesterRegistration" & "student" we got their ids. And in payload we got "offeredCourseId" & "offeredCourseSectionId". Finally we got 4 things to do this task.
+
+  if (!student) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Student Not Found');
+  }
+  if (!semesterRegistration) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Semester Registration Not Found'
+    );
+  }
+
+  const enrollCourse = await prisma.studentSemesterRegistrationCourse.create({
+    data: {
+      studentId: student?.id,
+      semesterRegistrationId: semesterRegistration?.id,
+      offeredCourseId: payload.offeredCourseId,
+      offeredCourseSectionId: payload.offeredCourseSectionId,
+    },
+  });
+
+  return enrollCourse;
+};
+
 export const SemesterRegistrationService = {
   insertIntoDB,
   getAllFromDB,
@@ -303,4 +352,5 @@ export const SemesterRegistrationService = {
   updateOneInDB,
   deleteByIdFromDB,
   startMyRegistration,
+  enrollIntoCourse,
 };
