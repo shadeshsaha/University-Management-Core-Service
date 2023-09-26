@@ -326,6 +326,9 @@ const enrollIntoCourse = async (
     where: {
       id: payload.offeredCourseId,
     },
+    include: {
+      course: true,
+    },
   });
 
   // check offeredCourseSection is exist or not
@@ -353,6 +356,17 @@ const enrollIntoCourse = async (
     );
   }
 
+  // Check enroll students count is bigger than maximum capacity. If bigger than max. capacity, we don't allow any student to enroll.
+  if (
+    offeredCourseSection.maxCapacity &&
+    offeredCourseSection.currentlyEnrolledStudent &&
+    offeredCourseSection.currentlyEnrolledStudent >=
+      offeredCourseSection.maxCapacity
+  ) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Student capacity is full!');
+  }
+
+  // console.log(offeredCourse);
   await prisma.$transaction(async transactionClient => {
     await transactionClient.studentSemesterRegistrationCourse.create({
       data: {
@@ -374,9 +388,28 @@ const enrollIntoCourse = async (
         },
       },
     });
+
+    // How many credits are taken, make a count of it
+    await transactionClient.studentSemesterRegistration.updateMany({
+      where: {
+        student: {
+          id: student.id,
+        },
+        semesterRegistration: {
+          id: semesterRegistration.id,
+        },
+      },
+      data: {
+        totalCreditsTaken: {
+          increment: offeredCourse.course.credits, // total credit ekhan theke dhorbe r increment korbe
+        },
+      },
+    });
   });
 
-  return {};
+  return {
+    message: 'Successfully enrolled into course!',
+  };
 };
 
 export const SemesterRegistrationService = {

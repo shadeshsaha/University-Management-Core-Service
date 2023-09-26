@@ -38,9 +38,9 @@ router.delete(
 );
 
 router.post(
-  "/enroll-into-course",
+  '/enroll-into-course',
   auth(ENUM_USER_ROLE.STUDENT),
   SemesterRegistrationController.enrollIntoCourse
-  )
+);
 
 export const semesterRegistrationRoutes = router;
