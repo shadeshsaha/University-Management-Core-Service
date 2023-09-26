@@ -321,28 +321,62 @@ const enrollIntoCourse = async (
   });
   // console.log('semesterRegistration: ', semesterRegistration);
 
-  // By "semesterRegistration" & "student" we got their ids. And in payload we got "offeredCourseId" & "offeredCourseSectionId". Finally we got 4 things to do this task.
-
-  if (!student) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Student Not Found');
-  }
-  if (!semesterRegistration) {
-    throw new ApiError(
-      httpStatus.BAD_REQUEST,
-      'Semester Registration Not Found'
-    );
-  }
-
-  const enrollCourse = await prisma.studentSemesterRegistrationCourse.create({
-    data: {
-      studentId: student?.id,
-      semesterRegistrationId: semesterRegistration?.id,
-      offeredCourseId: payload.offeredCourseId,
-      offeredCourseSectionId: payload.offeredCourseSectionId,
+  // check offeredCourse is exist or not
+  const offeredCourse = await prisma.offeredCourse.findFirst({
+    where: {
+      id: payload.offeredCourseId,
     },
   });
 
-  return enrollCourse;
+  // check offeredCourseSection is exist or not
+  const offeredCourseSection = await prisma.offeredCourseSection.findFirst({
+    where: {
+      id: payload.offeredCourseSectionId,
+    },
+  });
+
+  // By "semesterRegistration" & "student" we got their ids. And in payload we got "offeredCourseId" & "offeredCourseSectionId". Finally we got 4 things to do this task.
+
+  if (!student) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Student Not Found');
+  }
+  if (!semesterRegistration) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Semester Registration Not Found');
+  }
+  if (!offeredCourse) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Offered Course Not Found');
+  }
+  if (!offeredCourseSection) {
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      'Offered Course Section Not Found'
+    );
+  }
+
+  await prisma.$transaction(async transactionClient => {
+    await transactionClient.studentSemesterRegistrationCourse.create({
+      data: {
+        studentId: student?.id,
+        semesterRegistrationId: semesterRegistration?.id,
+        offeredCourseId: payload.offeredCourseId,
+        offeredCourseSectionId: payload.offeredCourseSectionId,
+      },
+    });
+
+    // How many students currently enrolled in a course, make a count of it
+    await transactionClient.offeredCourseSection.update({
+      where: {
+        id: payload.offeredCourseSectionId, // here we have offeredCourseSectionId
+      },
+      data: {
+        currentlyEnrolledStudent: {
+          increment: 1,
+        },
+      },
+    });
+  });
+
+  return {};
 };
 
 export const SemesterRegistrationService = {
