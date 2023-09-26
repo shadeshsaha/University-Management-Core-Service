@@ -295,6 +295,6 @@ model StudentSemesterRegistrationCourse {
   createdAt              DateTime             @default(now())
   updatedAt              DateTime             @updatedAt
 
-  @@id([semesterRegistrationId, studentId, offeredCourseId]) // We don't need now "offeredCourseSectionId". In case we need this, we can add into "@@id" later
+  @@id([semesterRegistrationId, studentId, offeredCourseId]) // We don't need now "offeredCourseSectionId". In case we need this, we can add into "@@id" later. This is called "composite-key".
   @@map("student_semester_registration_courses")
 }
