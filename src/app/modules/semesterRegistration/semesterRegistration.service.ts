@@ -322,6 +322,83 @@ const withdrawFromCourse = async (
   );
 };
 
+// Confirming A Student's Registration
+const confirmMyRegistration = async (
+  authUserId: string
+): Promise<{ message: string }> => {
+  // Check semester registration is ongoing or not
+  const semesterRegistration = await prisma.semesterRegistration.findFirst({
+    where: {
+      status: SemesterRegistrationStatus.ONGOING,
+    },
+  });
+
+  // Checking minCredit and maxCredit fullfill or not for register in a semester(semesterRegistration)
+  const studentSemesterRegistration =
+    await prisma.studentSemesterRegistration.findFirst({
+      where: {
+        semesterRegistration: {
+          id: semesterRegistration?.id,
+        },
+        student: {
+          studentId: authUserId,
+        },
+      },
+    });
+
+  // console.log('semesterRegistration: ', semesterRegistration);
+  // console.log('studentSemesterRegistration: ', studentSemesterRegistration);
+
+  // Student semester registration na korle "studentSemesterRegistration"a kono data thakbe na. na thakle error dibe
+  if (!studentSemesterRegistration) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'You are not recognized for this semester!'
+    );
+  }
+
+  if (studentSemesterRegistration.totalCreditsTaken === 0) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'You are not enrolled in any course!'
+    );
+  }
+
+  // jokhn "studentSemesterRegistration" er data thakbe, "totalCreditsTaken" ta "minCredit" r "maxCredit" er moddhe ache kina seta check korte hbe.
+  // tct = 3
+  // MinC = 3
+  // MaxC = 6
+  // tct < minC || tct > maxC
+  if (
+    studentSemesterRegistration.totalCreditsTaken &&
+    semesterRegistration?.minCredit &&
+    semesterRegistration.maxCredit &&
+    (studentSemesterRegistration.totalCreditsTaken <
+      semesterRegistration?.minCredit ||
+      studentSemesterRegistration.totalCreditsTaken >
+        semesterRegistration?.maxCredit)
+  ) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      `You can only take ${semesterRegistration.minCredit} to ${semesterRegistration.maxCredit} credits`
+    );
+  }
+
+  // R jokhn "totalCreditsTaken" ta "minCredit" r "maxCredit" er moddhe thakbe tokhn update korte hobe.
+  await prisma.studentSemesterRegistration.update({
+    where: {
+      id: studentSemesterRegistration.id,
+    },
+    data: {
+      isConfirmed: true,
+    },
+  });
+
+  return {
+    message: 'Your registration is confirmed!',
+  };
+};
+
 export const SemesterRegistrationService = {
   insertIntoDB,
   getAllFromDB,
@@ -331,4 +408,5 @@ export const SemesterRegistrationService = {
   startMyRegistration,
   enrollIntoCourse,
   withdrawFromCourse,
+  confirmMyRegistration,
 };
