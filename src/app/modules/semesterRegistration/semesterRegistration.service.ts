@@ -399,6 +399,37 @@ const confirmMyRegistration = async (
   };
 };
 
+// Show registration data/enrolled course data
+const getMyRegistration = async (authUserId: string) => {
+  // check semester registration is ongoing or not. Ongoing hole ekhane data ashbe ekta
+  const semesterRegistration = await prisma.semesterRegistration.findFirst({
+    where: {
+      status: SemesterRegistrationStatus.ONGOING,
+    },
+    include: {
+      academicSemester: true,
+    },
+  });
+
+  // semesterRegistration er data pawar pore studentSemesterRegistrationer data find korte hbe
+  const studentSemesterRegistration =
+    await prisma.studentSemesterRegistration.findFirst({
+      where: {
+        semesterRegistration: {
+          id: semesterRegistration?.id,
+        },
+        student: {
+          studentId: authUserId,
+        },
+      },
+      include: {
+        student: true,
+      },
+    });
+
+  return { semesterRegistration, studentSemesterRegistration };
+};
+
 export const SemesterRegistrationService = {
   insertIntoDB,
   getAllFromDB,
@@ -409,4 +440,5 @@ export const SemesterRegistrationService = {
   enrollIntoCourse,
   withdrawFromCourse,
   confirmMyRegistration,
+  getMyRegistration,
 };
