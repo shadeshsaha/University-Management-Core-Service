@@ -17,6 +17,7 @@ model AcademicSemester {
   code                  String
   startMonth            String
   endMonth              String
+  isCurrent             Boolean?               @default(false) // eta start semester er jonno. Reg. complete er por semester start hole true, na hole false dekhabe.
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   students              Student[]

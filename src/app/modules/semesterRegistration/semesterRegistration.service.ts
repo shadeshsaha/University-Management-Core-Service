@@ -430,6 +430,45 @@ const getMyRegistration = async (authUserId: string) => {
   return { semesterRegistration, studentSemesterRegistration };
 };
 
+const startNewSemester = async (id: string) => {
+  // Jei semester ta reg er por start korte chacchi seta find kora holo
+  const semesterRegistration = await prisma.semesterRegistration.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      academicSemester: true,
+    },
+  });
+  // console.log('semesterRegistration: ', semesterRegistration);
+
+  if (!semesterRegistration) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Semester Registration Not Found!'
+    );
+  }
+
+  // Jei semester er reg sesh hoynai, seta start korte gele ei error dibe
+  if (semesterRegistration.status !== SemesterRegistrationStatus.ENDED) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Semester Registration Is Not Ended Yet!'
+    );
+  }
+
+  // Jei semester er reg sesh, shei semester start er jonno update status er kaj kora holo. Update status true hole semester start hoye jabe.
+  const updateStatus = await prisma.academicSemester.update({
+    where: {
+      id: semesterRegistration.academicSemester.id,
+    },
+    data: {
+      isCurrent: true,
+    },
+  });
+  return updateStatus;
+};
+
 export const SemesterRegistrationService = {
   insertIntoDB,
   getAllFromDB,
@@ -441,4 +480,5 @@ export const SemesterRegistrationService = {
   withdrawFromCourse,
   confirmMyRegistration,
   getMyRegistration,
+  startNewSemester,
 };
