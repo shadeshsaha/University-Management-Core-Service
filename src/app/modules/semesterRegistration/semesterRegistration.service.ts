@@ -1,8 +1,11 @@
 import {
+  Course,
+  OfferedCourse,
   Prisma,
   SemesterRegistration,
   SemesterRegistrationStatus,
   StudentSemesterRegistration,
+  StudentSemesterRegistrationCourse,
 } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
@@ -520,9 +523,27 @@ const startNewSemester = async (id: string) => {
               },
             },
           });
-        console.log(
-          'studentSemesterRegistrationCourses: ',
-          studentSemesterRegistrationCourses
+        // console.log('studentSemesterRegistrationCourses: ', studentSemesterRegistrationCourses);
+        asyncForEach(
+          studentSemesterRegistrationCourses,
+          async (
+            item: StudentSemesterRegistrationCourse & {
+              offeredCourse: OfferedCourse & {
+                course: Course;
+              };
+            }
+          ) => {
+            // student der enroll kora course er data insert hobe "StudentEnrolledCourse" table a.
+            const enrolledCourseData = {
+              studentId: item.studentId,
+              courseId: item.offeredCourse.courseId,
+              academicSemesterId: semesterRegistration.academicSemesterId,
+            };
+
+            await prisma.studentEnrolledCourse.create({
+              data: enrolledCourseData,
+            });
+          }
         );
       }
     );
