@@ -434,7 +434,7 @@ const getMyRegistration = async (authUserId: string) => {
   return { semesterRegistration, studentSemesterRegistration };
 };
 
-const startNewSemester = async (id: string) => {
+const startNewSemester = async (id: string): Promise<{ message: string }> => {
   // Jei semester ta reg er por start korte chacchi seta find kora holo
   const semesterRegistration = await prisma.semesterRegistration.findUnique({
     where: {
@@ -462,9 +462,9 @@ const startNewSemester = async (id: string) => {
   }
 
   // Jodi already semester start hoye thake, means "isCurrent" jodi age thekei true thake tahole ekta msg dibe.
-  // if (semesterRegistration.academicSemester.isCurrent) {
-  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Semester Is Already Started!');
-  // }
+  if (semesterRegistration.academicSemester.isCurrent) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Semester Is Already Started!');
+  }
 
   await prisma.$transaction(async prismaTransactionClient => {
     // At a time 1 tai semester start hobe. 1 ta semester start howar por r kono semester start hote parbe nah. New 1ta semester start hole baki shob semester er "isCurrent" status "false" hoye jabe. jeta start hbe seta only true thakbe.
@@ -533,16 +533,28 @@ const startNewSemester = async (id: string) => {
               };
             }
           ) => {
-            // student der enroll kora course er data insert hobe "StudentEnrolledCourse" table a.
-            const enrolledCourseData = {
-              studentId: item.studentId,
-              courseId: item.offeredCourse.courseId,
-              academicSemesterId: semesterRegistration.academicSemesterId,
-            };
+            const isExistEnrolledData =
+              await prisma.studentEnrolledCourse.findFirst({
+                where: {
+                  studentId: item.studentId,
+                  courseId: item.offeredCourse.courseId,
+                  academicSemesterId: semesterRegistration.academicSemesterId,
+                },
+              });
 
-            await prisma.studentEnrolledCourse.create({
-              data: enrolledCourseData,
-            });
+            // studentId, courseId, academicSemesterId diye check korbo age theke kono data "StudentEnrolledCourse" table a ache kina. Jodi thake tahole duplicate data add korte dibona, na thakle data add korte dibo.
+            if (!isExistEnrolledData) {
+              // student der enroll kora course er data insert hobe "StudentEnrolledCourse" table a.
+              const enrolledCourseData = {
+                studentId: item.studentId,
+                courseId: item.offeredCourse.courseId,
+                academicSemesterId: semesterRegistration.academicSemesterId,
+              };
+
+              await prisma.studentEnrolledCourse.create({
+                data: enrolledCourseData,
+              });
+            }
           }
         );
       }
