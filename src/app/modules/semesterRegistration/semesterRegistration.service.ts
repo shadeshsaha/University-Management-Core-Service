@@ -462,16 +462,31 @@ const startNewSemester = async (id: string) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Semester Is Already Started!');
   }
 
-  // Jei semester er reg sesh, shei semester start er jonno update status er kaj kora holo. Update status true hole semester start hoye jabe.
-  const updateStatus = await prisma.academicSemester.update({
-    where: {
-      id: semesterRegistration.academicSemester.id,
-    },
-    data: {
-      isCurrent: true,
-    },
+  await prisma.$transaction(async prismaTransactionClient => {
+    // At a time 1 tai semester start hobe. 1 ta semester start howar por r kono semester start hote parbe nah. New 1ta semester start hole baki shob semester er "isCurrent" status "false" hoye jabe. jeta start hbe seta only true thakbe.
+    await prismaTransactionClient.academicSemester.updateMany({
+      where: {
+        isCurrent: true,
+      },
+      data: {
+        isCurrent: false,
+      },
+    });
+
+    // semester er "isCurrent" status "false" hoye jawar pore jei semester start korbo seta update kore dibo "isCurrent" status "true" hishebe [ Jei semester er reg sesh, shei semester start er jonno update status er kaj kora holo. Update status true hole semester start hoye jabe.]
+    await prismaTransactionClient.academicSemester.update({
+      where: {
+        id: semesterRegistration.academicSemester.id,
+      },
+      data: {
+        isCurrent: true,
+      },
+    });
   });
-  return updateStatus;
+
+  return {
+    message: 'Semester Started Successfully!',
+  };
 };
 
 export const SemesterRegistrationService = {
