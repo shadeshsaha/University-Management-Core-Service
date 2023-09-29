@@ -457,6 +457,11 @@ const startNewSemester = async (id: string) => {
     );
   }
 
+  // Jodi already semester start hoye thake, means "isCurrent" jodi age thekei true thake tahole ekta msg dibe.
+  if (semesterRegistration.academicSemester.isCurrent) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Semester Is Already Started!');
+  }
+
   // Jei semester er reg sesh, shei semester start er jonno update status er kaj kora holo. Update status true hole semester start hoye jabe.
   const updateStatus = await prisma.academicSemester.update({
     where: {
