@@ -10,6 +10,7 @@ import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
+import { asyncForEach } from '../../../shared/utils';
 import { StudentSemesterRegistrationCourseService } from '../studentSemesterRegistrationCourse/studentSemesterRegistrationCourse.service';
 import {
   semesterRegistrationRelationalFields,
@@ -458,9 +459,9 @@ const startNewSemester = async (id: string) => {
   }
 
   // Jodi already semester start hoye thake, means "isCurrent" jodi age thekei true thake tahole ekta msg dibe.
-  if (semesterRegistration.academicSemester.isCurrent) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Semester Is Already Started!');
-  }
+  // if (semesterRegistration.academicSemester.isCurrent) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Semester Is Already Started!');
+  // }
 
   await prisma.$transaction(async prismaTransactionClient => {
     // At a time 1 tai semester start hobe. 1 ta semester start howar por r kono semester start hote parbe nah. New 1ta semester start hole baki shob semester er "isCurrent" status "false" hoye jabe. jeta start hbe seta only true thakbe.
@@ -482,6 +483,49 @@ const startNewSemester = async (id: string) => {
         isCurrent: true,
       },
     });
+
+    // student er enroll kora course er data find er kaj
+    const studentSemesterRegistrations =
+      await prisma.studentSemesterRegistration.findMany({
+        where: {
+          semesterRegistration: {
+            id,
+          },
+          isConfirmed: true,
+        },
+      });
+    // console.log('studentSemesterRegistrations: ', studentSemesterRegistrations);
+
+    // Student er enroll kora course er data find kora.
+    asyncForEach(
+      studentSemesterRegistrations,
+      async (studentSemReg: StudentSemesterRegistration) => {
+        // console.log('studentSemReg: ', studentSemReg);
+        // J J course a enroll kora hoise ekta student er seshob er data eikhane dekha jabe.
+        const studentSemesterRegistrationCourses =
+          await prisma.studentSemesterRegistrationCourse.findMany({
+            where: {
+              semesterRegistration: {
+                id,
+              },
+              student: {
+                id: studentSemReg.studentId,
+              },
+            },
+            include: {
+              offeredCourse: {
+                include: {
+                  course: true,
+                },
+              },
+            },
+          });
+        console.log(
+          'studentSemesterRegistrationCourses: ',
+          studentSemesterRegistrationCourses
+        );
+      }
+    );
   });
 
   return {

@@ -67,7 +67,7 @@ router.post(
   '/:id/start-new-semester',
   auth(ENUM_USER_ROLE.ADMIN),
   SemesterRegistrationController.startNewSemester
-  // '/:id/start-new-semester'. Ekhane ":id" tar jagay "academicSemester" er id boshbe
+  // '/:id/start-new-semester'. Ekhane ":id" tar jagay "semesterRegistration" er id boshbe
 );
 
 export const semesterRegistrationRoutes = router;
