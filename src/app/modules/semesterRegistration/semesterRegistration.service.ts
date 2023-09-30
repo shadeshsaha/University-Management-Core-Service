@@ -14,6 +14,7 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 import { asyncForEach } from '../../../shared/utils';
+import { StudentSemesterPaymentService } from '../studentSemesterPayment/studentSemesterPayment.service';
 import { StudentSemesterRegistrationCourseService } from '../studentSemesterRegistrationCourse/studentSemesterRegistrationCourse.service';
 import {
   semesterRegistrationRelationalFields,
@@ -462,9 +463,9 @@ const startNewSemester = async (id: string): Promise<{ message: string }> => {
   }
 
   // Jodi already semester start hoye thake, means "isCurrent" jodi age thekei true thake tahole ekta msg dibe.
-  if (semesterRegistration.academicSemester.isCurrent) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Semester Is Already Started!');
-  }
+  // if (semesterRegistration.academicSemester.isCurrent) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Semester Is Already Started!');
+  // }
 
   await prisma.$transaction(async prismaTransactionClient => {
     // At a time 1 tai semester start hobe. 1 ta semester start howar por r kono semester start hote parbe nah. New 1ta semester start hole baki shob semester er "isCurrent" status "false" hoye jabe. jeta start hbe seta only true thakbe.
@@ -503,6 +504,19 @@ const startNewSemester = async (id: string): Promise<{ message: string }> => {
     asyncForEach(
       studentSemesterRegistrations,
       async (studentSemReg: StudentSemesterRegistration) => {
+        // Creating Semester Payment For Courses
+        if (studentSemReg.totalCreditsTaken) {
+          const totalPaymentAmount = studentSemReg.totalCreditsTaken * 5000;
+          await StudentSemesterPaymentService.createSemesterPayment(
+            prismaTransactionClient,
+            {
+              studentId: studentSemReg.studentId,
+              academicSemesterId: semesterRegistration.academicSemesterId,
+              totalPaymentAmount: totalPaymentAmount,
+            }
+          );
+        }
+
         // console.log('studentSemReg: ', studentSemReg);
         // J J course a enroll kora hoise ekta student er seshob er data eikhane dekha jabe.
         const studentSemesterRegistrationCourses =

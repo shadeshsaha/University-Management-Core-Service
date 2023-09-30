@@ -6,16 +6,6 @@
     "auditLog": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\.29ac66b53da80ba304f9bd3911200349e73938b2-audit.json",
     "files": [
         {
-            "date": 1694898930750,
-            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-17-09-03-error.log",
-            "hash": "762e02346b5c58dc44232e7f5cbc6b450b4d7bde38b96a92efcdd7cb82d25e55"
-        },
-        {
-            "date": 1694901683869,
-            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-17-09-04-error.log",
-            "hash": "2526022fa695533d34676213126dc0be2c935ea7fa5c77a1d9530d96c30d746a"
-        },
-        {
             "date": 1694909598561,
             "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-17-09-06-error.log",
             "hash": "71ca5d2abdcc8073e9a9a1c6b3b4c936fd2a40ed24ffbc5594b89c88f4d952a3"
@@ -314,6 +304,16 @@
             "date": 1696107533074,
             "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-01-10-02-error.log",
             "hash": "dc995742990be3659b71f0bf5ee5215df4645395e52f1623b2774b2edd155f23"
+        },
+        {
+            "date": 1696110066325,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-01-10-03-error.log",
+            "hash": "9f0ec01b57cc05ec4ca91de8c2b737674d3f0acb605a187ea3fcd9165c9dac6e"
+        },
+        {
+            "date": 1696111845646,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-01-10-04-error.log",
+            "hash": "4921760cbc91569f78fb75731e58533530a0e3b6a786bc3bd7c2f577ec0cebc7"
         }
     ],
     "hashType": "sha256"
