@@ -3,6 +3,8 @@ import { StudentEnrolledCourseMarkController } from './studentEnrolledCourseMark
 
 const router = express.Router();
 
+router.get('/', StudentEnrolledCourseMarkController.getAllFromDB);
+
 router.patch(
   '/update-marks',
   StudentEnrolledCourseMarkController.updateStudentMarks
