@@ -6,11 +6,6 @@
     "auditLog": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\.6834eb9a40a4e7e8d7a4ee570e0671413bb8a902-audit.json",
     "files": [
         {
-            "date": 1694946950708,
-            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-17-09-16-success.log",
-            "hash": "133438cb241ec610de841af2e3379d73998f4a442218cb897f77f93a804a15fd"
-        },
-        {
             "date": 1694983010005,
             "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-18-09-02-success.log",
             "hash": "d1b9899cbb5b04ce6775b8126d301814e5066315fbf42b366578196f420877c8"
@@ -314,6 +309,21 @@
             "date": 1696119429580,
             "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-01-10-06-success.log",
             "hash": "317f9daede9f2411297a5cd496ac4d26ed448b2a9b70a163b530936d67f8eec0"
+        },
+        {
+            "date": 1696156240693,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-01-10-16-success.log",
+            "hash": "6bcd28136cedde503a4db5fac1f6737346068df4566d8eef84923daecb72b155"
+        },
+        {
+            "date": 1696159515784,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-01-10-17-success.log",
+            "hash": "76305a83092614f02ef9eb997c51b70a5f4fe27a90b9551139cffe8664a5ac98"
+        },
+        {
+            "date": 1696164796602,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-01-10-18-success.log",
+            "hash": "396edeb21551bdcacb80b45c4a9a8e27d3fc8b515023683ed939b88905be0610"
         }
     ],
     "hashType": "sha256"

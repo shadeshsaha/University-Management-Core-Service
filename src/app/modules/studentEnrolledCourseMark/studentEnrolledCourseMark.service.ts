@@ -98,6 +98,13 @@ const createStudentEnrolledCourseDefaultMark = async (
   }
 };
 
+const updateStudentMarks = async (payload: any) => {
+  console.log(payload);
+
+  // Faculty jokhn student er marks update korbe, tokhn "studentId", "studentEnrolledCourseId" k body te pathate hobe update er jonno. But jokhn kono faculty kono ekta student er marks update korbe tokhn faculty "studentEnrolledCourse" er data ta dekhte parbe nah, faculty sudhu "course" er data ta dekhte parbe. Tahole "studentEnrolledCourse" er moddhe "course" ta ache(prisma schema dekhle bujha jabe), tai "course" er data ta pailei "studentEnrolledCourse" er sathe relation kora jabe. So, faculty student er marks update er jonno amader body te "studentId", "courseId"(from "studentEnrolledCourse"), "academicSemesterId", "marks", "examType" eigulo pathate hobe.
+};
+
 export const StudentEnrolledCourseMarkService = {
   createStudentEnrolledCourseDefaultMark,
+  updateStudentMarks,
 };
