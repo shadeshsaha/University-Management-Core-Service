@@ -7,6 +7,8 @@ import {
   DefaultArgs,
   PrismaClientOptions,
 } from '@prisma/client/runtime/library';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -149,6 +151,62 @@ const getAllFromDB = async (
 
 const updateStudentMarks = async (payload: any) => {
   console.log(payload);
+  const { studentId, academicSemesterId, courseId, examType, marks } = payload;
+
+  const studentEnrolledCourseMarks =
+    await prisma.studentEnrolledCourseMark.findFirst({
+      where: {
+        student: {
+          id: studentId,
+        },
+        academicSemester: {
+          id: academicSemesterId,
+        },
+        studentEnrolledCourse: {
+          course: {
+            id: courseId,
+          },
+        },
+        examType,
+        // examType: examType, --> avabew lekha jay
+      },
+    });
+
+  if (!studentEnrolledCourseMarks) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Student enrolled course mark not found'
+    );
+  }
+
+  // calculate grade
+  let grade = '';
+  if (marks >= 0 && marks <= 39) {
+    grade = 'F';
+  } else if (marks >= 40 && marks <= 49) {
+    grade = 'D';
+  } else if (marks >= 50 && marks <= 59) {
+    grade = 'C';
+  } else if (marks >= 60 && marks <= 69) {
+    grade = 'B';
+  } else if (marks >= 70 && marks <= 79) {
+    grade = 'A';
+  } else if (marks >= 80 && marks <= 100) {
+    grade = 'A+';
+  }
+
+  // Now update "marks" and "grade"
+  const updateStudentMarks = await prisma.studentEnrolledCourseMark.update({
+    where: {
+      id: studentEnrolledCourseMarks.id,
+    },
+    data: {
+      marks,
+      grade,
+    },
+  });
+
+  return updateStudentMarks;
 
   // Faculty jokhn student er marks update korbe, tokhn "studentId", "studentEnrolledCourseId" k body te pathate hobe update er jonno. But jokhn kono faculty kono ekta student er marks update korbe tokhn faculty "studentEnrolledCourse" er data ta dekhte parbe nah, faculty sudhu "course" er data ta dekhte parbe. Tahole "studentEnrolledCourse" er moddhe "course" ta ache(prisma schema dekhle bujha jabe), tai "course" er data ta pailei "studentEnrolledCourse" er sathe relation kora jabe. So, faculty student er marks update er jonno amader body te "studentId", "courseId"(from "studentEnrolledCourse"), "academicSemesterId", "marks", "examType" eigulo pathate hobe.
 };
