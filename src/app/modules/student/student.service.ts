@@ -141,10 +141,50 @@ const deleteFromDB = async (id: string): Promise<Student> => {
   return result;
 };
 
+// student er enroll kora course dekha
+const myCourses = async (
+  authUserId: string,
+  filter: {
+    courseId?: string | undefined;
+    academicSemesterId?: string | undefined;
+  }
+) => {
+  // console.log('authUserId: ', authUserId);
+
+  // academicSemesterId na thakle find korbe
+  if (!filter.academicSemesterId) {
+    // 1. Find current academic semester
+    const currentSemester = await prisma.academicSemester.findFirst({
+      where: {
+        isCurrent: true,
+      },
+    });
+    filter.academicSemesterId = currentSemester?.id; // filter er moddhei currentSemesterId ta set kora holo.
+    // console.log('currentSemester: ', currentSemester);
+  }
+
+  // 2. Find student's enrolled courses data using "authUserId (jeta student er id)" & "currentSemester er id" from "StudentEnrolledCourse"
+  const result = await prisma.studentEnrolledCourse.findMany({
+    where: {
+      student: {
+        studentId: authUserId,
+      },
+      ...filter, // filter er vetor er property gulo ekhane chole ashbe
+    },
+    include: {
+      course: true,
+    },
+  });
+
+  // console.log('Result: ', result);
+  return result;
+};
+
 export const StudentService = {
   insertIntoDB,
   getAllFromDB,
   getByIdFromDB,
   updateIntoDB,
   deleteFromDB,
+  myCourses,
 };
