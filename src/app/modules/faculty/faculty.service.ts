@@ -198,6 +198,105 @@ const removeCourses = async (
   return assignCoursesData;
 };
 
+const myCourses = async (
+  authUser: {
+    userId: string;
+    role: string;
+  },
+  filter: {
+    academicSemesterId?: string | null | undefined;
+    courseId?: string | null | undefined;
+  }
+) => {
+  // console.log('authUser: ', authUser);
+
+  // academicSemesterId na thakle find korbe
+  if (!filter.academicSemesterId) {
+    // 1. Find current academic semester
+    const currentSemester = await prisma.academicSemester.findFirst({
+      where: {
+        isCurrent: true,
+      },
+    });
+    filter.academicSemesterId = currentSemester?.id; // filter er moddhei currentSemesterId ta set kora holo.
+    // console.log('currentSemester: ', currentSemester);
+  }
+
+  // Faculty kon kon section a, kon semester er jonno, kon kon course nibe seta offeredCourseSection theke find korte hobe
+  const offeredCourseSections = await prisma.offeredCourseSection.findMany({
+    where: {
+      offeredCourseClassSchedules: {
+        some: {
+          faculty: {
+            facultyId: authUser.userId,
+          },
+        },
+      },
+      offeredCourse: {
+        semesterRegistration: {
+          academicSemester: {
+            id: filter.academicSemesterId,
+          },
+        },
+      },
+    },
+    include: {
+      offeredCourse: {
+        include: {
+          course: true,
+        },
+      },
+      offeredCourseClassSchedules: {
+        include: {
+          room: {
+            include: {
+              building: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  // console.log('offeredCourseSections: ', offeredCourseSections);
+
+  // Remove duplicate courses
+  const courseAndSchedule = offeredCourseSections.reduce(
+    (acc: any, obj: any) => {
+      // console.log('Obj: ', obj);
+
+      const course = obj.offeredCourse.course;
+      const classSchedules = obj.offeredCourseClassSchedules;
+
+      // check existing course age theke ache kina
+      const existingCourse = acc.find(
+        (item: any) => item.course?.id === course?.id
+      );
+      if (existingCourse) {
+        existingCourse.sections.push({
+          section: obj,
+          classSchedules,
+        });
+      } else {
+        acc.push({
+          course,
+          sections: [
+            {
+              section: obj,
+              classSchedules,
+            },
+          ],
+        });
+      }
+      // console.log('acc: ', acc);
+      return acc;
+    },
+    []
+  );
+
+  // console.log('courseAndSchedule: ', courseAndSchedule);
+  return courseAndSchedule;
+};
+
 export const FacultyService = {
   insertIntoDB,
   getAllFromDB,
@@ -206,4 +305,5 @@ export const FacultyService = {
   deleteByIdFromDB,
   assignCourses,
   removeCourses,
+  myCourses,
 };
