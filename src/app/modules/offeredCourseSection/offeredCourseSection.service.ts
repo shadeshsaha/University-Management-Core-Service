@@ -5,14 +5,25 @@ import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
+import { asyncForEach } from '../../../shared/utils';
+import { OfferedCourseClassScheduleUtils } from '../offeredCourseClassSchedule/offeredCourseClassSchedule.utils';
 import {
   offeredCourseSectionRelationalFields,
   offeredCourseSectionRelationalFieldsMapper,
   offeredCourseSectionSearchableFields,
 } from './offeredCourseSection.constants';
-import { IOfferedCourseSectionFilterRequest } from './offeredCourseSection.interface';
+import {
+  IClassSchedule,
+  IOfferedCourseSectionCreate,
+  IOfferedCourseSectionFilterRequest,
+} from './offeredCourseSection.interface';
 
-const insertIntoDB = async (data: any): Promise<OfferedCourseSection> => {
+const insertIntoDB = async (
+  payload: IOfferedCourseSectionCreate
+): Promise<OfferedCourseSection | null> => {
+  const { classSchedules, ...data } = payload;
+  // console.log('payload: ', payload);
+
   // "offeredCourseId" er kono data na thakle "OfferedCourseSection" create korte parbo na. Er jonno "offeredCourseId" exist korte hobe. setar validation er kaj niche...
   const isExistOfferedCourse = await prisma.offeredCourse.findFirst({
     where: {
@@ -20,18 +31,92 @@ const insertIntoDB = async (data: any): Promise<OfferedCourseSection> => {
     },
   });
 
-  console.log(isExistOfferedCourse);
-  console.log('data: ', data);
+  // console.log("isExistOfferedCourse", isExistOfferedCourse);
 
   if (!isExistOfferedCourse) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Offered course does not exist');
   }
 
-  data.semesterRegistrationId = isExistOfferedCourse.semesterRegistrationId;
-
-  const result = await prisma.offeredCourseSection.create({
-    data,
+  // classSchedules er data pawar pore, classSchedules onujayi classroom & faculty available ache kina
+  await asyncForEach(classSchedules, async (schedule: any) => {
+    await OfferedCourseClassScheduleUtils.checkRoomAvailable(schedule);
+    await OfferedCourseClassScheduleUtils.checkFacultyAvailable(schedule);
   });
+
+  // offeredCourseSection er moddhe kono data pawa gele oi offeredCourseSection r create kora hobe na
+  const offerCourseSectionData = await prisma.offeredCourseSection.findFirst({
+    where: {
+      offeredCourse: {
+        id: data.offeredCourseId,
+      },
+      title: data.title,
+    },
+  });
+  // offeredCourse r title diye data pawa gele notun kono data create hobe na
+  if (offerCourseSectionData) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Course section already exists!'
+    );
+  }
+
+  const createSection = await prisma.$transaction(async transactionClient => {
+    // 1. creating offered course section
+    const createOfferedCourseSection = await prisma.offeredCourseSection.create(
+      {
+        data: {
+          title: data.title,
+          maxCapacity: data.maxCapacity,
+          offeredCourseId: data.offeredCourseId,
+          semesterRegistrationId: isExistOfferedCourse.semesterRegistrationId,
+        },
+      }
+    );
+
+    // 2. creating class schedule
+    // class schedule a offeredCourseSectionId & semesterRegistrationId k nite/add korte hobe
+    const scheduleData = classSchedules.map((schedule: IClassSchedule) => ({
+      startTime: schedule.startTime,
+      endTime: schedule.endTime,
+      dayOfWeek: schedule.dayOfWeek,
+      roomId: schedule.roomId,
+      facultyId: schedule.facultyId,
+      offeredCourseSectionId: createOfferedCourseSection.id,
+      semesterRegistrationId: isExistOfferedCourse.semesterRegistrationId,
+    }));
+    // console.log('scheduleData: ', scheduleData);
+
+    // createSchedules
+    await transactionClient.offeredCourseClassSchedule.createMany({
+      data: scheduleData,
+    });
+
+    return createOfferedCourseSection;
+  });
+
+  const result = await prisma.offeredCourseSection.findFirst({
+    where: {
+      id: createSection.id,
+    },
+    include: {
+      offeredCourse: {
+        include: {
+          course: true,
+        },
+      },
+      offeredCourseClassSchedules: {
+        include: {
+          room: {
+            include: {
+              building: true,
+            },
+          },
+          faculty: true,
+        },
+      },
+    },
+  });
+
   return result;
 };
 
