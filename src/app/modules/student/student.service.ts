@@ -180,6 +180,83 @@ const myCourses = async (
   return result;
 };
 
+// Student er enroll kora shob course er schedule dekha/class routine dekha student er
+const getMyCourseSchedules = async (
+  authUserId: string,
+  filter: {
+    courseId?: string | undefined;
+    academicSemesterId?: string | undefined;
+  }
+) => {
+  // console.log('authUserId: ', authUserId);
+  // console.log('filter: ', filter);
+
+  // Find current semester exist or not. academicSemesterId na thakle find korbe
+  if (!filter.academicSemesterId) {
+    // 1. Find current academic semester
+    const currentSemester = await prisma.academicSemester.findFirst({
+      where: {
+        isCurrent: true,
+      },
+    });
+    filter.academicSemesterId = currentSemester?.id; // filter er moddhei currentSemesterId ta set kora holo.
+    // console.log('currentSemester: ', currentSemester);
+  }
+
+  // kon kon course a student enroll koreche, shei course gulo k age ber kora/find kora. then class routine/schedule ber kora/find kora jabe
+  const studentEnrolledCourses = await myCourses(authUserId, filter);
+  // console.log('studentEnrolledCourses: ', studentEnrolledCourses);
+
+  // J j course a student enroll koreche, shei course gulor id k alada kore nite hbe
+  const studentEnrolledCourseIds = studentEnrolledCourses.map(
+    item => item.courseId
+  );
+  // console.log('studentEnrolledCourseIds: ', studentEnrolledCourseIds);
+
+  // Finally find student course routine/schedule
+  const result = await prisma.studentSemesterRegistrationCourse.findMany({
+    where: {
+      student: {
+        studentId: authUserId,
+      },
+      semesterRegistration: {
+        academicSemester: {
+          id: filter.academicSemesterId,
+        },
+      },
+      offeredCourse: {
+        course: {
+          id: {
+            in: studentEnrolledCourseIds,
+          },
+        },
+      },
+    },
+    include: {
+      offeredCourse: {
+        include: {
+          course: true,
+        },
+      },
+      offeredCourseSection: {
+        include: {
+          offeredCourseClassSchedules: {
+            include: {
+              room: {
+                include: {
+                  building: true,
+                },
+              },
+              faculty: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  return result;
+};
+
 export const StudentService = {
   insertIntoDB,
   getAllFromDB,
@@ -187,4 +264,5 @@ export const StudentService = {
   updateIntoDB,
   deleteFromDB,
   myCourses,
+  getMyCourseSchedules,
 };
