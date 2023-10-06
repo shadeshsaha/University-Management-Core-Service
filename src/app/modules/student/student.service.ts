@@ -1,4 +1,4 @@
-import { Prisma, Student } from '@prisma/client';
+import { Prisma, Student, StudentEnrolledCourseStatus } from '@prisma/client';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -9,6 +9,7 @@ import {
   studentSearchableFields,
 } from './student.constants';
 import { IStudentFilterRequest } from './student.interface';
+import { StudentUtils } from './student.utils';
 
 const insertIntoDB = async (data: Student): Promise<Student> => {
   const result = await prisma.student.create({
@@ -257,6 +258,50 @@ const getMyCourseSchedules = async (
   return result;
 };
 
+// Student's result & academic info get
+const getMyAcademicInfo = async (authUserId: string): Promise<any> => {
+  // console.log('authUserId: ', authUserId);
+
+  // check student exist or not in StudentAcademicInfo table
+  const academicInfo = await prisma.studentAcademicInfo.findFirst({
+    where: {
+      student: {
+        studentId: authUserId,
+      },
+    },
+  });
+  // console.log('academicInfo: ', academicInfo);
+
+  // after getting academicInfo, then find student j j course a enrolled koreche & completed courses
+  const enrolledCourses = await prisma.studentEnrolledCourse.findMany({
+    where: {
+      student: {
+        studentId: authUserId,
+      },
+      // find student's completed courses
+      status: StudentEnrolledCourseStatus.COMPLETED,
+    },
+    include: {
+      course: true,
+      academicSemester: true,
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  });
+  // console.log('enrolledCourses: ', enrolledCourses);
+
+  // onek gulo completed course onek gulo semester er. Show semester wise
+  const groupByAcademicSemesterData =
+    StudentUtils.groupByAcademicSemester(enrolledCourses);
+  // console.log('groupByAcademicSemesterData: ', groupByAcademicSemesterData);
+
+  return {
+    academicInfo,
+    courses: groupByAcademicSemesterData,
+  };
+};
+
 export const StudentService = {
   insertIntoDB,
   getAllFromDB,
@@ -265,4 +310,5 @@ export const StudentService = {
   deleteFromDB,
   myCourses,
   getMyCourseSchedules,
+  getMyAcademicInfo,
 };

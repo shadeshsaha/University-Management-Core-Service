@@ -344,6 +344,36 @@
             "date": 1696554376046,
             "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-06-10-07-error.log",
             "hash": "34cbd72511e9439ece3937bca9a805f9b4ddaa9aa198f6aa9c2c5503bb25fe2c"
+        },
+        {
+            "date": 1696590901462,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-06-10-17-error.log",
+            "hash": "7c35fae8ac7a64c60f304016e964e0f438507e75c71955d1dcca73ae69fc531b"
+        },
+        {
+            "date": 1696593762552,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-06-10-18-error.log",
+            "hash": "76ba9d9ccb210c3c5a2e0572f3781ede14fb212d3a4ca131855a76855495c3d7"
+        },
+        {
+            "date": 1696625978153,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-07-10-02-error.log",
+            "hash": "ca5665c6d1947501d702b362cfa33477411cc1fa9c7de77e5cac75257376d048"
+        },
+        {
+            "date": 1696628004747,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-07-10-03-error.log",
+            "hash": "d718482fed936595da59b76724a0163d0f761d6d56a57dffe01093c425807c9a"
+        },
+        {
+            "date": 1696629665858,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-07-10-04-error.log",
+            "hash": "9d6eb8dbb4bb05cf86b390444be3671fbcdf6bb577195effd1c176c202955cba"
+        },
+        {
+            "date": 1696633610583,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\errors\\phu-2023-07-10-05-error.log",
+            "hash": "120a4d9f46eb958c27124831fa25d92ac65c90f774cb2139556cc79a4f657237"
         }
     ],
     "hashType": "sha256"

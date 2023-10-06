@@ -344,6 +344,36 @@
             "date": 1696554376022,
             "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-06-10-07-success.log",
             "hash": "2641c412cfb566c8e98adfa22667bcf5bed14c85e5ec9b1bed76391ed815ac18"
+        },
+        {
+            "date": 1696590901448,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-06-10-17-success.log",
+            "hash": "e51f9b9df4dbb8a68fd8c4dc4458e0591394fcb3d1b1c337fcf9777824cc3b37"
+        },
+        {
+            "date": 1696593762535,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-06-10-18-success.log",
+            "hash": "80507ed33a137040d45086c2fe99ea3680ad6d26360cdbab1ae66ba340945417"
+        },
+        {
+            "date": 1696625978123,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-07-10-02-success.log",
+            "hash": "284a54fbb3d757f7ad75c6f8e224a4291a631968c8dc383edd06c38b5a990d96"
+        },
+        {
+            "date": 1696628004742,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-07-10-03-success.log",
+            "hash": "755cf90acc643a97837d845be98eeee45583d47e0b6966e62523577a517ea339"
+        },
+        {
+            "date": 1696629665842,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-07-10-04-success.log",
+            "hash": "f7402077552c79067113b55fbaa519912ad73651fdd2178a5f3add5f96774d44"
+        },
+        {
+            "date": 1696633610577,
+            "name": "F:\\Programming Hero Batch-4\\Next Level 2.0\\University-Management-Core-Service\\logs\\winston\\successes\\phu-2023-07-10-05-success.log",
+            "hash": "5e3a838205ddcf1e83f5d249bf2bdf21d03559321da6c48af9da633602a47def"
         }
     ],
     "hashType": "sha256"
