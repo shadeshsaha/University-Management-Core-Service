@@ -4,6 +4,7 @@ import {
   Prisma,
   SemesterRegistration,
   SemesterRegistrationStatus,
+  StudentEnrolledCourseStatus,
   StudentSemesterRegistration,
   StudentSemesterRegistrationCourse,
 } from '@prisma/client';
@@ -26,6 +27,7 @@ import {
   IEnrollCoursePayload,
   ISemesterRegistrationFilterRequest,
 } from './semesterRegistration.interface';
+import { SemesterRegistrationUtils } from './semesterRegistration.utils';
 
 const insertIntoDB = async (
   data: SemesterRegistration
@@ -598,6 +600,120 @@ const startNewSemester = async (id: string): Promise<{ message: string }> => {
   };
 };
 
+const getMySemesterRegistrationCourses = async (authUserId: string) => {
+  // console.log('authUser', authUserId);
+
+  // Using authUserId check stuent exist or not
+  const student = await prisma.student.findFirst({
+    where: {
+      studentId: authUserId,
+    },
+  });
+  // console.log('Student', student);
+
+  // After getting student data, check semester registration is ongoing or upcoming. When semester registration is ongoing or upcoming, then will see available courses
+  const semesterRegistration = await prisma.semesterRegistration.findFirst({
+    where: {
+      status: {
+        in: [
+          SemesterRegistrationStatus.UPCOMING,
+          SemesterRegistrationStatus.ONGOING,
+        ],
+      },
+    },
+    include: {
+      academicSemester: true,
+    },
+  });
+  // console.log('semesterRegistration: ', semesterRegistration);
+
+  if (!semesterRegistration) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'No semester registration is ongoing or upcoming!'
+    );
+  }
+
+  // 1. Find student's completed courses from studentEnrolledCourse (Karon complete howa course ei table a thake)
+  const studentCompletedCourse = await prisma.studentEnrolledCourse.findMany({
+    where: {
+      status: StudentEnrolledCourseStatus.COMPLETED,
+      student: {
+        id: student?.id, // 1st way
+        // studentId: authUserId, // 2nd way
+      },
+    },
+    include: {
+      course: true,
+    },
+  });
+  // console.log('studentCompletedCourse: ', studentCompletedCourse);
+
+  // 2. Enroll kora course ber kora [currently ekjon student jeshob courses niyeche]
+  const studentCurrentSemesterTakenCourse =
+    await prisma.studentSemesterRegistrationCourse.findMany({
+      where: {
+        student: {
+          id: student?.id,
+        },
+        semesterRegistration: {
+          id: semesterRegistration?.id,
+        },
+      },
+      include: {
+        offeredCourse: true,
+        offeredCourseSection: true,
+      },
+    });
+  // console.log('studentCurrentSemesterTakenCourse: ', studentCurrentSemesterTakenCourse);
+
+  // 3. University's offered courses list from offeredCourse table
+  const offeredCourse = await prisma.offeredCourse.findMany({
+    where: {
+      semesterRegistration: {
+        id: semesterRegistration?.id,
+      },
+      academicDepartment: {
+        id: student?.academicDepartmentId,
+      },
+    },
+    include: {
+      course: {
+        include: {
+          preRequisite: {
+            include: {
+              preRequisite: true,
+            },
+          },
+        },
+      },
+      offeredCourseSections: {
+        include: {
+          offeredCourseClassSchedules: {
+            include: {
+              room: {
+                include: {
+                  building: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+  // console.log('offeredCourse: ', offeredCourse);
+
+  // University theke offer kora course theke student er complete kora course remove korte hobe.
+  const availableCourses = SemesterRegistrationUtils.getAvailableCourses(
+    studentCompletedCourse,
+    studentCurrentSemesterTakenCourse,
+    offeredCourse
+  );
+  // console.log('availableCourses: ', availableCourses);
+  return availableCourses;
+};
+
 export const SemesterRegistrationService = {
   insertIntoDB,
   getAllFromDB,
@@ -610,4 +726,5 @@ export const SemesterRegistrationService = {
   confirmMyRegistration,
   getMyRegistration,
   startNewSemester,
+  getMySemesterRegistrationCourses,
 };
